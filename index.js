@@ -1,42 +1,21 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const bodyParser = express.json;
-const yup = require('yup');
+const bodyParser = express.json();
+const {validateUser} = require('./mw/validation.mw');
+const UserController = require('./controllers/User.controller');
+
 const PORT = 3000;
 
 const server = http.createServer(app);
 
-const USER_SCHEMA = yup.object({
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    email: yup.string().required().email(),
-    password: yup.string().required(),
-    isSubscribed: yup.boolean()
-});
+app.post('/user', bodyParser, validateUser, UserController.createUser);
 
-const db = [];
+app.get('/users/', UserController.getAllUsers);
 
-app.post('/user', bodyParser, async (req, res, next)=>{
-    const {body} = req;
-    try {
-        const result = await USER_SCHEMA.validate(body);
-        next();
-    } catch (error) {
-        res.status(400).send(error.message)
-    }
-}, (req, res, next)=>{
-    const {body} = req;
-    const user = {...body, id: db.length}
-    db.push(user);
-    delete user.password;
-    res.status(201).send(user);
-});
+app.get('/users/:userId', UserController.getOneUsers);
 
-app.get('/users', (req, res, next)=>{
-    res.status(200).send(db);
-})
-
+app.put('/users/:userId', UserController.updateUser);
 
 server.listen(PORT, ()=>{
     console.log(`App is started on port ${PORT}`)
