@@ -1,21 +1,36 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-
+const bodyParser = express.json;
+const yup = require('yup');
 const PORT = 3000;
 
 const server = http.createServer(app);
 
+const USER_SCHEMA = yup.object({
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    email: yup.email().required(),
+    password: yup.string().required(),
+    isSubscribed: yup.boolean()
+});
 
-app.get('/', (req, res, next) => {
-    console.log('first');
-    next();
-}, (req, res, next) => {
-    console.log('second');
-    next()
-}, (req, res, next) => {
-    console.log('fhird');
-    res.send('Result');
+const db = [];
+
+app.post('/', bodyParser, async (req, res, next)=>{
+    const {body} = req;
+    try {
+        const result = await USER_SCHEMA.validate(body);
+        next();
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+}, (req, res, next)=>{
+    const {body} = req;
+    const user = {...body, id: db.length}
+    db.push(user);
+    delete user.password;
+    res.status(201).send(user)
 });
 
 
