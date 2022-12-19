@@ -10,14 +10,14 @@ const server = http.createServer(app);
 const USER_SCHEMA = yup.object({
     firstName: yup.string().required(),
     lastName: yup.string().required(),
-    email: yup.email().required(),
+    email: yup.string().required().email(),
     password: yup.string().required(),
     isSubscribed: yup.boolean()
 });
 
 const db = [];
 
-app.post('/', bodyParser, async (req, res, next)=>{
+app.post('/user', bodyParser, async (req, res, next)=>{
     const {body} = req;
     try {
         const result = await USER_SCHEMA.validate(body);
@@ -30,9 +30,12 @@ app.post('/', bodyParser, async (req, res, next)=>{
     const user = {...body, id: db.length}
     db.push(user);
     delete user.password;
-    res.status(201).send(user)
+    res.status(201).send(user);
 });
 
+app.get('/users', (req, res, next)=>{
+    res.status(200).send(db);
+})
 
 
 server.listen(PORT, ()=>{

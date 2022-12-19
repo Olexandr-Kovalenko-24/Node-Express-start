@@ -1,10 +1,10 @@
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3000/user HTTP/1.1
 Content-Type: application/json
 
 {
     "firstName": "Clarc",
     "lastName": "Job",
-    "email": "gfdh@gfg.com",
-    "password": "ffsffhrte34",
+    "email": "gfdh@gfcxg.com",
+    "password": "ffsffhrtecxx#E34",
     "isSubscribed": true
 }
