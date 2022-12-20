@@ -20,7 +20,7 @@ class User {
 
     async update(updateValues) {
         const oldUser = db.get(this.id);
-        const newUser = new User({...oldUser, ...updateValues});
+        const newUser = await new User({...oldUser, ...updateValues});
         db.set(this.id, newUser);
         return newUser;
     }
