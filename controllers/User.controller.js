@@ -39,7 +39,6 @@ module.exports.updateUser = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-
 }
 
 module.exports.deleteUser = async (req, res, next) => {
@@ -50,5 +49,16 @@ module.exports.deleteUser = async (req, res, next) => {
         res.status(200).send('user deleted');
     } catch (error) {
         next(error)
+    }
+}
+
+module.exports.authoriseUser = async (req, res, next) => {
+    try {
+        const { body, params: { userId } } = req;
+        const foundedUser = await User.findOne(Number(userId));
+        const result = await foundedUser.authorise(body);
+        res.status(200).send(result);
+    } catch (error) {
+        next(error);
     }
 }
