@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const cors = require('cors');
 const bodyParser = express.json();
 const {validateUser} = require('./mw/validation.mw');
 const UserController = require('./controllers/User.controller');
+const getUserInstance = require('./mw/getUserInstance.mw');
 const {ValidationError} = require('yup');
 
 const PORT = 3000;
@@ -11,11 +13,11 @@ const PORT = 3000;
 const server = http.createServer(app);
 
 app.post('/users', bodyParser, validateUser, UserController.createUser);
-app.post('/users/:userId', bodyParser, UserController.authoriseUser);
+app.post('/users/:userId', bodyParser, getUserInstance, UserController.authoriseUser);
 app.get('/users/', UserController.getAllUsers);
-app.get('/users/:userId', UserController.getOneUsers);
-app.put('/users/:userId', bodyParser, UserController.updateUser);
-app.delete('/users/:userId', UserController.deleteUser);
+app.get('/users/:userId', getUserInstance, UserController.getOneUsers);
+app.put('/users/:userId', bodyParser, getUserInstance, UserController.updateUser);
+app.delete('/users/:userId', getUserInstance, UserController.deleteUser);
 
 const errorHandler = async (err, req, res, next) => {
     if(err instanceof TypeError) {
@@ -26,6 +28,12 @@ const errorHandler = async (err, req, res, next) => {
     }
     res.status(404).send();
 }
+
+// const corsOptions = {
+//     origin: '*'
+// }
+
+app.use(cors());
 app.use(errorHandler);
 
 server.listen(PORT, ()=>{

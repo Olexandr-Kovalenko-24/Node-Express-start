@@ -29,13 +29,6 @@ class User {
         return db.delete(this.id);
     }
 
-    async authorise (accountData) {
-        const user = db.get(this.id);
-        if(user.email === accountData.email && user.password === accountData.password){
-            return user;
-        } else {Error}
-    }
-
     static async findOne(id){
         return db.get(id);
     }
@@ -43,7 +36,6 @@ class User {
     static async findAll(){
         return [...db.values()];
     }
-
 }
 
 module.exports = User;

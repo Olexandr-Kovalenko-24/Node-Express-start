@@ -22,9 +22,8 @@ module.exports.getAllUsers = async (req, res, next) => {
 
 module.exports.getOneUsers = async (req, res, next) => {
     try {
-        const { params: { userId } } = req;
-        const foundedUser = await User.findOne(Number(userId));
-        res.send(foundedUser);
+        const { userInstance, params: { userId } } = req;
+        res.send(userInstance);
     } catch (error) {
         next(error)
     }
@@ -32,9 +31,8 @@ module.exports.getOneUsers = async (req, res, next) => {
 
 module.exports.updateUser = async (req, res, next) => {
     try {
-        const { body, params: { userId } } = req;
-        const foundedUser = await User.findOne(Number(userId));
-        const updatedUser = await foundedUser.update(body);
+        const { userInstance, body, params: { userId } } = req;
+        const updatedUser = await userInstance.update(body);
         res.status(200).send(updatedUser);
     } catch (error) {
         next(error)
@@ -43,9 +41,8 @@ module.exports.updateUser = async (req, res, next) => {
 
 module.exports.deleteUser = async (req, res, next) => {
     try {
-        const { params: { userId } } = req;
-        const foundedUser = await User.findOne(Number(userId));
-        const result = await foundedUser.delete();
+        const { userInstance, params: { userId } } = req;
+        const result = await userInstance.delete();
         res.status(200).send('user deleted');
     } catch (error) {
         next(error)
@@ -54,10 +51,17 @@ module.exports.deleteUser = async (req, res, next) => {
 
 module.exports.authoriseUser = async (req, res, next) => {
     try {
-        const { body, params: { userId } } = req;
-        const foundedUser = await User.findOne(Number(userId));
-        const result = await foundedUser.authorise(body);
-        res.status(200).send(result);
+        const { userInstance, body, params: { userId } } = req;
+        if(userInstance.email === body.email){
+            if(userInstance.password === body.password){
+                res.status(202).send('Authorised.successfully');
+            } else {
+                res.status(400).send('Password incorrect')
+            }
+        } else {
+            res.status(403).send('Incorrect email')
+        }
+
     } catch (error) {
         next(error);
     }
