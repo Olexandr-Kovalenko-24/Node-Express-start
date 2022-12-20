@@ -1,0 +1,10 @@
+PUT http://localhost:3000/users/2 HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Clark",
+    "lastName": "Kent",
+    "email": "123super-puper@man.com",
+    "password": "super-duper-man",
+    "isSubscribed": false
+}

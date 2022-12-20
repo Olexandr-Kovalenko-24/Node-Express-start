@@ -18,7 +18,7 @@ class User {
         return this;
     }
 
-    async update (updateValues) {
+    async update(updateValues) {
         const oldUser = db.get(this.id);
         const newUser = new User({...oldUser, ...updateValues});
         db.set(this.id, newUser);

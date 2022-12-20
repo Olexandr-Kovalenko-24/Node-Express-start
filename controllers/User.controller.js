@@ -9,6 +9,7 @@ module.exports.createUser = async (req, res, next)=>{
 
 module.exports.getAllUsers = async (req, res, next)=>{
     const users = await User.findAll();
+    res.send(users);
 }
 
 module.exports.getOneUsers = async (req, res, next) => {
@@ -17,6 +18,17 @@ module.exports.getOneUsers = async (req, res, next) => {
     res.send(foundedUser);
 }
 
-module.exports.updateUser = () => {}
+module.exports.updateUser = async (req, res, next) => {
+    const {body, params: {userId}} = req;
+    const foundedUser = await User.findOne(Number(userId));
+    console.log(foundedUser);
+    const updatedUser = await foundedUser.update(body);
+    res.send(updatedUser);
+}
 
-module.exports.deleteUser = () => {}
+module.exports.deleteUser = async (req, res, next) => {
+    const {params: {userId}} = req;
+    const foundedUser = await User.findOne(Number(userId));
+    const deleteUser = await foundedUser.delete();
+    res.send(deleteUser);
+}
