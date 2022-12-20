@@ -10,14 +10,21 @@ const PORT = 3000;
 const server = http.createServer(app);
 
 app.post('/user', bodyParser, validateUser, UserController.createUser);
-
 app.get('/users/', UserController.getAllUsers);
-
 app.get('/users/:userId', UserController.getOneUsers);
-
 app.put('/users/:userId', bodyParser, UserController.updateUser);
-
 app.delete('/users/:userId', UserController.deleteUser);
+
+const errorHandler = async (err, req, res, next) => {
+    if(err instanceof TypeError) {
+        return res.status(400).send('Invalid request');
+    }
+    if(err instanceof ValidationError) {
+        return res.status(401).send(err.message);
+    }
+    res.status(404).send()
+}
+app.use(errorHandler);
 
 server.listen(PORT, ()=>{
     console.log(`App is started on port ${PORT}`)

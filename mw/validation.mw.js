@@ -6,6 +6,6 @@ module.exports.validateUser = async (req, res, next)=>{
         const result = await USER_SCHEMA.validate(body);
         next();
     } catch (error) {
-        res.status(400).send(error.message)
+        next(error)
     }
 }
